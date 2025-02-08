@@ -1,11 +1,15 @@
 package com.rest.demo.models;
 
+import java.util.Set;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.Table;
-import jakarta.persistence.UniqueConstraint;
+import jakarta.persistence.ManyToMany;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -14,13 +18,10 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
-@Table(name= "category",
-    uniqueConstraints = {
-        @UniqueConstraint(columnNames = "name"),
-        @UniqueConstraint(columnNames = "slug")
-    }
-)
-@Getter @Setter @NoArgsConstructor @AllArgsConstructor
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class Category {
 
     @Id
@@ -28,9 +29,15 @@ public class Category {
     private Long id;
 
     @NotNull(message = "Name cannot be null")
+    @Column(unique = true, nullable = false)
     private String name;
 
     @NotBlank(message = "Slug cannot be blank")
+    @Column(unique = true, nullable = false)
     private String slug;
+
+    @ManyToMany(mappedBy = "categories")
+    @JsonIgnore
+    private Set<Article> articles;
 }
 

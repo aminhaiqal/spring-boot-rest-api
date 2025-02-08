@@ -1,10 +1,9 @@
 package com.rest.demo.controllers;
 
+import com.rest.demo.models.Category;
+import com.rest.demo.services.CategoryService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import com.rest.demo.models.Category;
-import com.rest.demo.repos.CategoryRepo;
 
 import java.util.List;
 
@@ -12,48 +11,40 @@ import java.util.List;
 @RequestMapping("/api/categories")
 public class CategoryController {
 
-    private final CategoryRepo repo;
+    private final CategoryService categoryService;
 
-    // Constructor Injection
-    public CategoryController(CategoryRepo repo) {
-        this.repo = repo;
+    public CategoryController(CategoryService categoryService) {
+        this.categoryService = categoryService;
     }
 
-    // Get all categories
     @GetMapping
     public ResponseEntity<List<Category>> getAllCategories() {
-        return ResponseEntity.ok(repo.findAll());
+        return ResponseEntity.ok(categoryService.getAllCategories());
     }
 
-    // Find categories by slug pattern
     @GetMapping("/search/slug/{pattern}")
     public ResponseEntity<List<Category>> searchBySlugLike(@PathVariable String pattern) {
-        List<Category> categories = repo.findBySlugLike(pattern);
-        return ResponseEntity.ok(categories);
+        return ResponseEntity.ok(categoryService.searchBySlugLike(pattern));
     }
 
     @PostMapping
-    public ResponseEntity<Category> createCategory(@RequestBody Category c) {
-        return ResponseEntity.ok(repo.save(c));
+    public ResponseEntity<Category> createCategory(@RequestBody Category category) {
+        return ResponseEntity.ok(categoryService.createCategory(category));
     }
 
-    // Update category (handle non-existent ID)
     @PutMapping("/{id}")
-    public ResponseEntity<Category> updateCategory(@PathVariable Long id, @RequestBody Category c) {
-        if (!repo.existsById(id)) {
-            return ResponseEntity.notFound().build();
-        }
-        c.setId(id);
-        return ResponseEntity.ok(repo.save(c));
+    public ResponseEntity<Category> updateCategory(@PathVariable Long id, @RequestBody Category category) {
+        return categoryService.updateCategory(id, category)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
     }
 
-    // Delete category (handle errors, return 204 No Content)
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteCategory(@PathVariable Long id) {
-        if (!repo.existsById(id)) {
+        if (categoryService.deleteCategory(id)) {
+            return ResponseEntity.noContent().build();
+        } else {
             return ResponseEntity.notFound().build();
         }
-        repo.deleteById(id);
-        return ResponseEntity.noContent().build();
     }
 }
