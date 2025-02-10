@@ -1,8 +1,10 @@
 package com.rest.demo.models;
 
 import java.time.LocalDateTime;
+import java.util.HashSet;
 import java.util.Set;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -11,6 +13,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.PreUpdate;
 import lombok.AllArgsConstructor;
@@ -46,7 +49,11 @@ public class Article {
         joinColumns = @JoinColumn(name = "article_id"),
         inverseJoinColumns = @JoinColumn(name = "category_id")
     )
+
     private Set<Category> categories;
+
+    @OneToMany(mappedBy = "article", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<Comment> comments;
 
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;

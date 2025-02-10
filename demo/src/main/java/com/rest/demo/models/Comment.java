@@ -2,6 +2,8 @@ package com.rest.demo.models;
 
 import java.time.LocalDateTime;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -30,6 +32,7 @@ public class Comment {
 
     @ManyToOne
     @JoinColumn(name = "article_id", nullable = false)
+    @JsonIgnore
     private Article article;
 
     @Column(nullable = false, updatable = false)

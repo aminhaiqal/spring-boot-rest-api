@@ -34,7 +34,6 @@ public class CommentService {
                 .orElseThrow(() -> new RuntimeException("Article not found"));
 
         Comment comment = Comment.builder()
-                .content(content)
                 .article(article)
                 .build();
 
