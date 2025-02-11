@@ -27,7 +27,7 @@ public class CommentController {
     }
 
     // Get all comments for an article
-    @GetMapping("/article/{articleId}")
+    @GetMapping("/articles/{articleId}")
     public ResponseEntity<List<Comment>> getCommentsByArticle(@PathVariable Long articleId) {
         return ResponseEntity.ok(service.getCommentbyArticleId(articleId));
     }
@@ -45,12 +45,13 @@ public class CommentController {
         return ResponseEntity.ok(service.addComment(articleId, request.getContent()));
     }
 
-
     // Delete comment
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteComment(@PathVariable Long id) {
         service.deleteComment(id);
         return ResponseEntity.noContent().build();
     }
+    
+    // Like or Unlike an comment
     
 }

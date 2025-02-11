@@ -1,6 +1,6 @@
 package com.rest.demo.dtos;
 
-import com.rest.demo.models.Comment;
+import com.rest.demo.models.Article;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -17,16 +17,18 @@ public class ArticleResponse {
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
     private List<CommentResponse> comments;
+    private int totalLikes;
     
-    public ArticleResponse(Long id, String title, String slug, String content, LocalDateTime createdAt, LocalDateTime updatedAt, List<Comment> comments) {
-        this.id = id;
-        this.title = title;
-        this.slug = slug;
-        this.content = content;
-        this.createdAt = createdAt;
-        this.updatedAt = updatedAt;
-        this.comments = comments.stream()
+    public ArticleResponse(Article article) {
+        this.id = article.getId();
+        this.title = article.getTitle();
+        this.slug = article.getSlug();
+        this.content = article.getContent();
+        this.createdAt = article.getCreatedAt();
+        this.updatedAt = article.getUpdatedAt();
+        this.comments = article.getComments().stream()
                 .map(comment -> new CommentResponse(comment.getId(), comment.getContent(), comment.getCreatedAt()))
                 .toList();
+        this.totalLikes = article.getLikes().size();
     }
 }

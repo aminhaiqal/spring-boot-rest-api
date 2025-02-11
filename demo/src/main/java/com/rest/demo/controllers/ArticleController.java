@@ -3,6 +3,8 @@ package com.rest.demo.controllers;
 import com.rest.demo.dtos.ArticleRequest;
 import com.rest.demo.models.Article;
 import com.rest.demo.services.ArticleService;
+import com.rest.demo.services.LikeService;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -13,10 +15,12 @@ import java.util.List;
 public class ArticleController {
 
     private final ArticleService articleService;
+    private final LikeService likeService;
 
     // Constructor Injection
-    public ArticleController(ArticleService articleService) {
+    public ArticleController(ArticleService articleService, LikeService likeService) {
         this.articleService = articleService;
+        this.likeService = likeService;
     }
 
     // Get all articles
@@ -59,5 +63,12 @@ public class ArticleController {
             return ResponseEntity.noContent().build();
         }
         return ResponseEntity.notFound().build();
+    }
+
+    // Like or Unlike an article
+    @PostMapping("/{articleId}/like/{userId}")
+    public ResponseEntity<String> likeArticle(@PathVariable Long articleId, @PathVariable Long userId, @RequestParam boolean isLike) {
+        String message = likeService.likeArticle(articleId, userId, isLike);
+        return ResponseEntity.ok(message);
     }
 }

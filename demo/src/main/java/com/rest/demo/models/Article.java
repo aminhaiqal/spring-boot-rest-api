@@ -54,6 +54,9 @@ public class Article {
     @OneToMany(mappedBy = "article", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<Comment> comments;
 
+    @OneToMany(mappedBy = "article", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<Like> likes;
+
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
